@@ -33,6 +33,9 @@ class ReplayMemory(object):
 
 
 
+
+## Hyperparameters, need to be tuned depending on the siez and complexity of the grid
+
 batch_size = 64
 gamma = 0.99 #discount factor
 # epsilon-greedy parameters that will decrease over time
@@ -41,6 +44,7 @@ eps_end = .05
 eps_decay = 2500*5
 tau = 0.005 #target network update rate
 learning_rate = 1e-3
+
 
 nb_actions = 4
 state_size = 2
@@ -58,7 +62,8 @@ def select_action(state):
     """
     Select an action based on epsilon-greedy policy.
     
-    :param state: Description
+    :param state: (x,y) coordinates of the agent in the grid, as a tensor of shape (1.2)
+    :return: action index (0: up, 1: down, 2: right, 3: left) as a tensor of shape (1,1)
     """
     global step
     sample = random.random()
@@ -109,9 +114,11 @@ def optimize_model():
 def train(env:GridWorld):
     try:
         if torch.cuda.is_available() or torch.backends.mps.is_available():
-            num_episodes = 600
+            num_episodes = 600 # adapt as needed
         else:
             num_episodes = 50
+
+        max_steps = 99 # adapt as needed
 
         for i_episode in range(num_episodes):
             # Reset environment at the start of each episode
@@ -128,8 +135,8 @@ def train(env:GridWorld):
                 episode_reward += reward.item()
 
                 # next_state is None if episode terminates (goal reached or max steps)
-                done = env.is_goal() or t >= 99  # max 100 steps per episode
-                # done = t >=99
+                done = env.is_goal() or t >= max_steps
+
                 next_state = None if done else torch.tensor(observation, dtype=torch.float32, device=device).unsqueeze(0)
 
                 # Store the transition in memory

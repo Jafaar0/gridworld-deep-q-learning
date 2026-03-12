@@ -37,6 +37,7 @@ class GridWorld:
             self.obstacles = obstacles
         
     def show(self):
+        '''Display the grid world in the console. S for start, G for goal, X for obstacles.'''
         print("="*self.gridsize[0]*2)
         grid = [["." for i in range(self.gridsize[0])] for i in range(self.gridsize[1])]
         # grid[self.position[1]][self.position[0]] = "o"
@@ -78,22 +79,16 @@ class GridWorld:
         :param action: "up", "down", "right", "left"
         '''
 
-        if True or self.is_valid_move(action):
-            # reward = self.step_reward
-            match action:
-                case x if  x=="up" or x==0:
-                    self.position = (self.position[0], self.position[1]-1)
-                case x if x=="down" or x==1:
-                    self.position = (self.position[0], self.position[1]+1)
-                case x if x=="right" or x==2:
-                    self.position = (self.position[0]+1, self.position[1])
-                case x if x=="left" or x==3:
-                    self.position = (self.position[0]-1, self.position[1])
-            # if self.is_goal():
-            #     reward += self.goal_reward
-            #     return self.position, self.goal_reward+self.step_reward
-            # else:
-            return self.position, self.get_reward()
+        match action:
+            case x if  x=="up" or x==0:
+                self.position = (self.position[0], self.position[1]-1)
+            case x if x=="down" or x==1:
+                self.position = (self.position[0], self.position[1]+1)
+            case x if x=="right" or x==2:
+                self.position = (self.position[0]+1, self.position[1])
+            case x if x=="left" or x==3:
+                self.position = (self.position[0]-1, self.position[1])
+        return self.position, self.get_reward()
 
 
     
@@ -119,7 +114,7 @@ class GridWorld:
     
 
 def show_policy(policy_net, env):
-
+    '''Display the policy of the agent in the grid world using arrows in each state in the console.'''
 
     print("="*env.gridsize[0]*2)
     grid = [["." for i in range(env.gridsize[0])] for i in range(env.gridsize[1])]
